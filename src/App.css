@@ -1,0 +1,29 @@
+.App {
+  padding: 25px;
+}
+
+.NumberBlock {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  justify-content: center;
+
+  border-style: groove;
+  border-width: thin;
+
+  height: 30px;
+  width: 30px;
+  min-height: 30px;
+  min_width: 30px;
+  max-height: 30px;
+  max-width: 30px;
+
+  overflow: hidden;
+}
+
+textarea {
+  font-size: 14px;
+  display: flex;
+  flex: 1;
+  resize: none;
+}
