@@ -1,15 +1,16 @@
 import React, { PureComponent } from 'react';
 import './App.css';
 
+// Speed settings
 const MAX_INTERVAL = 1000;
-const START_SPEED = 50;
+const START_SPEED  = 50;
 
 // Color mappings 
-const CLEAR = 'transparent';
+const CLEAR   = 'transparent';
 const CURRENT = 'lightblue';
 const GREATER = 'green';
-const INDEX = 'yellow';
-const LESS = 'red';
+const INDEX   = 'yellow';
+const LESS    = 'red';
 
 export default class App extends PureComponent {
 
