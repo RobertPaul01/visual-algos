@@ -4,11 +4,19 @@ import './App.css';
 const MAX_INTERVAL = 1000;
 const START_SPEED = 50;
 
+// Color mappings 
+const CLEAR = 'transparent';
+const CURRENT = 'lightblue';
+const GREATER = 'green';
+const INDEX = 'yellow';
+const LESS = 'red';
+
 export default class App extends PureComponent {
+
   constructor(props) {
     super(props);
-    const arrayA = ['B','A','C','B','A','D','B','A','C','B','A','D'];
-    const arrayB = ['A','B','A','Z','D','C','A','B','A','Z','D','C'];
+    const arrayA = ['b','a','c','b','a','d','b','a','c','b','a','d'];
+    const arrayB = ['a','b','a','z','d','c','a','b','a','z','d','c'];
     const listA = this.parseArray(arrayA);
     const listB = this.parseArray(arrayB);
     const matrix = this.generateMatrix(listA.length, listB.length);
@@ -36,7 +44,7 @@ export default class App extends PureComponent {
     for (let data of array) {
       list.push({
         data,
-        backgroundColor: 'transparent',
+        backgroundColor: CLEAR,
       });
     }
     return list;
@@ -47,7 +55,7 @@ export default class App extends PureComponent {
     for (let x = 0; x < b; x++) {
       matrix[x] = [];
       for (let y = 0; y < a; y++) {
-        matrix[x].push({ data: 0, backgroundColor: 'transparent' });
+        matrix[x].push({ data: 0, backgroundColor: CLEAR });
       }
     }
     return matrix;
@@ -58,13 +66,11 @@ export default class App extends PureComponent {
     let { x, y, LCS } = this.state;
 
     if (!isRunning || x < 0 || y < 0) {
-      this.handleStop();
-      return;
+      return this.handleStop();
     }
 
-    matrix[x][y].backgroundColor = 'lightblue';
-    listB[x].backgroundColor = 'yellow';
-    listA[y].backgroundColor = 'yellow';
+    matrix[x][y].backgroundColor = CURRENT;
+    listB[x].backgroundColor = listA[y].backgroundColor = INDEX;
 
     let blockA = [x-1,y];
     let blockB = [x,y-1];
@@ -74,18 +80,18 @@ export default class App extends PureComponent {
       y--;
     } else if ((x === 0 ? 0: matrix[x-1][y].data) > (y === 0 ? 0 : matrix[x][y-1].data)) {
       if (x > 0) {
-        matrix[x-1][y].backgroundColor = 'green';
+        matrix[x-1][y].backgroundColor = GREATER;
       }
       if (y > 0) {
-        matrix[x][y-1].backgroundColor = 'red';
+        matrix[x][y-1].backgroundColor = LESS;
       }
       x--;
     } else {
       if (x > 0) {
-        matrix[x-1][y].backgroundColor = 'red';
+        matrix[x-1][y].backgroundColor = LESS;
       }
       if (y > 0) {
-        matrix[x][y-1].backgroundColor = 'green';
+        matrix[x][y-1].backgroundColor = GREATER;
       }
       y--;
     }
@@ -94,18 +100,18 @@ export default class App extends PureComponent {
     this.setState({ listA, listB, matrix, x, y, LCS },
       () => setTimeout(() => {
         if (blockA[0] > -1 && blockA[1] > -1
-          && matrix[blockA[0]][blockA[1]].backgroundColor === 'red') {
-            matrix[blockA[0]][blockA[1]].backgroundColor = 'transparent';
+          && matrix[blockA[0]][blockA[1]].backgroundColor === LESS) {
+            matrix[blockA[0]][blockA[1]].backgroundColor = CLEAR;
         }
         if (blockB[0] > -1 && blockB[1] > -1
-          && matrix[blockB[0]][blockB[1]].backgroundColor === 'red') {
-            matrix[blockB[0]][blockB[1]].backgroundColor = 'transparent';
+          && matrix[blockB[0]][blockB[1]].backgroundColor === LESS) {
+            matrix[blockB[0]][blockB[1]].backgroundColor = CLEAR;
         }
         if (x < listB.length-1) {
-          listB[x+1].backgroundColor = 'transparent';
+          listB[x+1].backgroundColor = CLEAR;
         }
         if (y < listA.length-1) {
-          listA[y+1].backgroundColor = 'transparent';
+          listA[y+1].backgroundColor = CLEAR;
         }
         this.setState({ listA, listB, matrix },
           () => this.backTrack());
@@ -117,20 +123,19 @@ export default class App extends PureComponent {
     const { listA, listB, matrix, isRunning, x, y } = this.state;
 
     if (!isRunning) {
-      this.handleStop();
-      return
+      return this.handleStop();
     } else if (y === listA.length) {
       if (x === listB.length - 1) {
         this.setState({ y : y-1 }, () => this.backTrack());
       } else {
-        this.setState({x: x+1, y: 0}, () => this.runAlgorithm());
+        this.setState({ x: x+1, y: 0 }, () => this.runAlgorithm());
       }
       return;
     }
 
     if (listB[x].data === listA[y].data) {
       if (x > 0 && y > 0) {
-        matrix[x-1][y-1].backgroundColor = 'green';
+        matrix[x-1][y-1].backgroundColor = GREATER;
         matrix[x][y].data = matrix[x-1][y-1].data+1;
       } else {
         matrix[x][y].data = 1;
@@ -138,46 +143,43 @@ export default class App extends PureComponent {
     } else {
       if (x > 0 && y > 0) {
         if (matrix[x-1][y].data === matrix[x][y-1].data) {
-          matrix[x-1][y].backgroundColor = 'green';
-          matrix[x][y-1].backgroundColor = 'green';
+          matrix[x-1][y].backgroundColor = matrix[x][y-1].backgroundColor = GREATER;
           matrix[x][y].data = matrix[x-1][y].data;
         } else if (matrix[x-1][y].data > matrix[x][y-1].data) {
-          matrix[x-1][y].backgroundColor = 'green';
-          matrix[x][y-1].backgroundColor = 'red';
+          matrix[x-1][y].backgroundColor = GREATER;
+          matrix[x][y-1].backgroundColor = LESS;
           matrix[x][y].data = matrix[x-1][y].data;
         } else {
-          matrix[x-1][y].backgroundColor = 'red';
-          matrix[x][y-1].backgroundColor = 'green';
+          matrix[x-1][y].backgroundColor = LESS;
+          matrix[x][y-1].backgroundColor = GREATER;
           matrix[x][y].data = matrix[x][y-1].data;
         }
       } else if (x > 0) {
-        matrix[x-1][y].backgroundColor = 'green';
+        matrix[x-1][y].backgroundColor = GREATER;
         matrix[x][y].data = matrix[x-1][y].data;
       } else if (y > 0) {
-        matrix[x][y-1].backgroundColor = 'green';
+        matrix[x][y-1].backgroundColor = GREATER;
         matrix[x][y].data = matrix[x][y-1].data;
       }
     }
 
-    matrix[x][y].backgroundColor = 'lightblue';
-    listB[x].backgroundColor = 'yellow';
-    listA[y].backgroundColor = 'yellow';
+    matrix[x][y].backgroundColor = CURRENT;
+    listB[x].backgroundColor = listA[y].backgroundColor = INDEX;
 
     let interval = MAX_INTERVAL - (MAX_INTERVAL * (this.state.speed / 100));
     this.setState({ listA, listB, matrix, y: y+1 },
       () => setTimeout(() => {
-        listB[x].backgroundColor = 'transparent';
-        listA[y].backgroundColor = 'transparent';
+        listB[x].backgroundColor = listA[y].backgroundColor = CLEAR;
         if (x > 0 && y > 0) {
-          matrix[x-1][y-1].backgroundColor = 'transparent';
+          matrix[x-1][y-1].backgroundColor = CLEAR;
         }
         if (x > 0) {
-          matrix[x-1][y].backgroundColor = 'transparent';
+          matrix[x-1][y].backgroundColor = CLEAR;
         }
         if (y > 0) {
-          matrix[x][y-1].backgroundColor = 'transparent';
+          matrix[x][y-1].backgroundColor = CLEAR;
         }
-        matrix[x][y].backgroundColor = 'transparent';
+        matrix[x][y].backgroundColor = CLEAR;
         this.setState({ listA, listB, matrix },
           () => this.runAlgorithm());
       }, interval)
@@ -320,13 +322,13 @@ export default class App extends PureComponent {
     return (
       <div style={{ padding: 20 }}>
         <div
-          style={styles.flexRow}
+          style={{ display: 'flex' }}
           children={[
             <div key={'0,0'} className="NumberBlock"/>,
             ...this.renderListDisplay(this.state.listA, 1, 0, [1,0])
           ]}
         />
-        <div style={styles.flexRow}>
+        <div style={{ display: 'flex' }}>
           <div children={this.renderListDisplay(this.state.listB, 0, 1, [0,1])} />
           <div children={this.renderMatrix(this.state.matrix)} />
         </div>
@@ -342,7 +344,7 @@ export default class App extends PureComponent {
       display.push(
         <div
           key={`matrixRow${y}`}
-          style={styles.flexRow}
+          style={{ display: 'flex' }}
           children={this.renderListDisplay(row, x, y, [1,0])}
         />
       );
@@ -355,17 +357,11 @@ export default class App extends PureComponent {
     return (
       <div className="App">
         { this.renderHeader() }
-        <div style={styles.flexRow}>
+        <div style={{ display: 'flex' }}>
           { this.renderInputForm() }
           { this.renderListDisplays() }
         </div>
       </div>
     );
   }
-}
-
-const styles = {
-  flexRow: {
-    display: 'flex',
-  },
 }
