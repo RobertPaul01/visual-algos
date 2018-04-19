@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import './App.css';
+import './LCS.css';
 
 // Speed settings
 const MAX_INTERVAL = 1000;
@@ -12,7 +12,7 @@ const GREATER = 'green';
 const INDEX   = 'yellow';
 const LESS    = 'red';
 
-export default class App extends PureComponent {
+export default class LCS extends PureComponent {
 
   constructor(props) {
     super(props);

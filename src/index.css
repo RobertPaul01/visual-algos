@@ -1,5 +1,5 @@
-body {
+.MainContainer {
   margin: 0;
-  padding: 0;
+  padding: 25px;
   font-family: sans-serif;
 }
