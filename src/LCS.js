@@ -12,6 +12,20 @@ const GREATER = 'green';
 const INDEX   = 'yellow';
 const LESS    = 'red';
 
+class NumberBlock extends PureComponent {
+  render() {
+    const { backgroundColor, data } = this.props;
+    return (
+      <div
+        className="NumberBlock"
+        style={{ backgroundColor: backgroundColor }}
+      >
+        { data }
+      </div>
+    );
+  }
+};
+
 export default class LCS extends PureComponent {
 
   constructor(props) {
@@ -233,7 +247,7 @@ export default class LCS extends PureComponent {
     return (
       <div>
         {
-          "Find the longest common subsequence between two strings."
+          "Finding the longest common subsequence between two strings."
         }
         <p/>
       </div>
@@ -297,22 +311,11 @@ export default class LCS extends PureComponent {
     );
   }
 
-  renderNumberBlock(listObj, x, y) {
-    return (
-      <div
-        key={`${x},${y}`}
-        className="NumberBlock"
-        style={{ backgroundColor: listObj.backgroundColor }}
-      >
-        { listObj.data }
-      </div>
-    );
-  }
-
   renderListDisplay(list, x, y, delta) {
     let display = [];
     for (let listObj of list) {
-      display.push(this.renderNumberBlock(listObj, x, y));
+      const { backgroundColor, data } = listObj;
+      display.push(<NumberBlock key={`${x},${y}`} backgroundColor={backgroundColor} data={data} />);
       x += delta[0];
       y += delta[1];
     }
@@ -325,7 +328,7 @@ export default class LCS extends PureComponent {
         <div
           style={{ display: 'flex' }}
           children={[
-            <div key={'0,0'} className="NumberBlock"/>,
+            <NumberBlock key={"0,0"} backgroundColor={CLEAR} />,
             ...this.renderListDisplay(this.state.listA, 1, 0, [1,0])
           ]}
         />

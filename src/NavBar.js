@@ -1,27 +1,15 @@
 import React, { PureComponent } from 'react';
-import { Redirect } from 'react-router'
+import { Link } from 'react-router-dom'
 
 export default class NavBar extends PureComponent {
-
-  constructor(props) {
-    super(props);
-    this.state = {
-      redirect: undefined,
-    }
-  }
 
   render() {
     return (
       <div>
-        { 
-          !!this.state.redirect && <Redirect to={this.state.redirect} /> 
-        }
-        <select onChange={(event) => {
-          this.setState({ redirect: event.target.value })
-        }}>
-          <option value="/">Home</option>
-          <option value="/lcs">Longest Common Subsequence</option>
-        </select>
+        <Link to="/">Home</Link>
+        <br/> 
+        {"Algorithms: "}
+        <Link to="/lcs">Longest Common Subsequence</Link>
       </div>
     );
   }
